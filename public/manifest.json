@@ -1,39 +1,33 @@
 {
   "manifest_version": 3,
-  "name": "Weather App ",
-  "version": "1.1",
-  "description": "Get real-time weather updates, forecasts, and alerts directly in your browser.",
+  "name": "HelpMeOut",
+  "version": "1.0",
+  "description": "This extension helps you record and share help videos with ease.",
+  "permissions": ["desktopCapture", "storage", "scripting", "offscreen"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "icons": {
-    "16": "/images/icon-16.png",
-    "48": "/images/icon-48.png",
-    "128": "/images/icon-128.png"
+    "16": "./images/icon16.png",
+    "48": "./images/icon48.png",
+    "128": "./images/icon128.png"
   },
   "action": {
     "default_popup": "index.html",
     "default_icons": {
-      "16": "/images/icon-16.png",
-      "48": "/images/icon-48.png",
-      "128": "/images/icon-128.png"
+      "16": "./images/icon16.png",
+      "48": "./images/icon48.png",
+      "128": "./images/icon128.png"
     }
   },
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
-  },
-
-  "permissions": [
-    "alarms",
-    "geolocation",
-    "storage",
-    "notifications",
-    "offscreen"
+  "web_accessible_resources": [
+    {
+      "resources": ["offscreen.html", "assets/offscreen.js"],
+      "matches": ["<all_urls>"]
+    }
   ],
 
-  "background": {
-    "service_worker": "background.js"
-  },
-  "host_permissions": [
-    "http://*/*",
-    "https://*/*",
-    "https://api.openweathermap.org/*"
-  ]
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
 }

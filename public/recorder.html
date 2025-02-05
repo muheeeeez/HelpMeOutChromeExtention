@@ -1,0 +1,88 @@
+<!-- public/recorder.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Screen Recorder</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 20px;
+      }
+      .video-container {
+        position: relative;
+        width: 80%;
+        margin: auto;
+      }
+      video {
+        width: 100%;
+        border: 1px solid #ccc;
+      }
+      .webcam-overlay {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 200px;
+        height: 150px;
+        border: 2px solid #fff;
+      }
+      .controls {
+        margin-top: 20px;
+      }
+      .button {
+        margin-top: 25px;
+        width: 280px;
+        height: 51px;
+        border-radius: 12px;
+        border: 2px solid #120b48;
+        background-color: #120b48;
+        color: white;
+        font-family: "Work Sans", sans-serif;
+        font-weight: 500;
+        font-size: 20x;
+        line-height: 18.77px;
+        cursor: pointer;
+      }
+      .btn-primary,
+      .btn-secondary {
+        cursor: pointer;
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: 0.2s;
+      }
+      .btn-primary {
+        background-color: #120b48;
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background-color: #0c0836;
+      }
+      .btn-secondary {
+        background-color: #e0e0e0;
+        color: #000;
+      }
+      .btn-secondary:hover {
+        background-color: #c9c9c9;
+      }
+      button[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Screen Recorder</h1>
+    <div class="video-container">
+      <video id="screenPreview" autoplay muted></video>
+      <video id="webcamPreview" class="webcam-overlay" autoplay muted></video>
+    </div>
+    <div class="controls">
+      <button id="startBtn" class="btn-primary">Start Recording</button>
+      <button id="stopBtn" disabled class="btn-secondary">Stop Recording</button>
+    </div>
+    <script type="module" src="assets/recorder.js"></script>
+  </body>
+</html>
