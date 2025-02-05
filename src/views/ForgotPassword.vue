@@ -1,5 +1,6 @@
 <template>
   <div class="hero">
+    <img src="../assets/images/arrow.png" alt="arrow" @click="goBack" />
     <div class="form-box">
       <div class="button-box">
         <div id="btn"></div>
@@ -45,12 +46,21 @@ const resetPassword = () => {
       });
     });
 };
+
+function goBack() {
+  router.push("/auth");
+}
 </script>
 <style scoped>
 * {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+}
+img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 }
 .hero {
   height: 100%;

@@ -14,11 +14,11 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
-// Read video title from URL parameter (default to "Recording")
+// Read video title from URL parameter; default to "Recording"
 const urlParams = new URLSearchParams(window.location.search);
 const videoNameParam = urlParams.get("videoName") || "Recording";
 
-// Firebase configuration (you can use environment variables or hard-code for testing)
+// Firebase configuration (you can also use environment variables)
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -33,11 +33,12 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// DOM elements
+// Get DOM elements
 const startBtn = document.getElementById("startBtn");
 const stopBtn = document.getElementById("stopBtn");
 const screenPreview = document.getElementById("screenPreview");
 const webcamPreview = document.getElementById("webcamPreview");
+const recorderUI = document.getElementById("recorderUI");
 
 let mediaRecorder;
 let recordedChunks = [];
@@ -47,8 +48,12 @@ let webcamStream;
 startBtn.addEventListener("click", async () => {
   startBtn.disabled = true;
   stopBtn.disabled = false;
+
   try {
-    // Trigger the built-in screen–share prompt in a full-page context.
+    // Hide the recorder UI so it isn't captured
+    if (recorderUI) recorderUI.style.display = "none";
+
+    // Request screen capture (this will trigger the built-in screen–share prompt in a full-page window)
     screenStream = await navigator.mediaDevices.getDisplayMedia({
       video: true,
       audio: true,
@@ -56,14 +61,14 @@ startBtn.addEventListener("click", async () => {
     screenStream.getTracks().forEach((track) => {
       track.addEventListener("ended", stopRecording);
     });
-    // Get the webcam stream for overlay.
+    // Request webcam capture for overlay.
     webcamStream = await navigator.mediaDevices.getUserMedia({
       video: { width: 200, height: 150 },
       audio: false,
     });
     webcamPreview.srcObject = webcamStream;
     screenPreview.srcObject = screenStream;
-    // Combine screen and webcam streams.
+    // Combine the screen and webcam streams.
     const combinedStream = new MediaStream([
       ...screenStream.getTracks(),
       ...webcamStream.getVideoTracks(),
@@ -73,15 +78,17 @@ startBtn.addEventListener("click", async () => {
       mimeType: "video/webm",
     });
     mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) recordedChunks.push(event.data);
+      if (event.data && event.data.size > 0) {
+        recordedChunks.push(event.data);
+      }
     };
     mediaRecorder.onstop = async () => {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
-      // Optionally display a preview:
+      // Optionally, display a preview (this preview will show the recorded video without the UI)
       screenPreview.src = URL.createObjectURL(blob);
       // Upload the video to Firebase using the provided video title.
       await uploadVideo(blob, videoNameParam);
-      // Optionally close the recorder window after a short delay.
+      // Optionally, close the recorder window after a short delay.
       setTimeout(() => window.close(), 3000);
     };
     mediaRecorder.start();
@@ -103,6 +110,8 @@ function stopRecording() {
   if (webcamStream) webcamStream.getTracks().forEach((track) => track.stop());
   startBtn.disabled = false;
   stopBtn.disabled = true;
+  // Optionally restore the recorder UI if you want it visible after recording.
+  if (recorderUI) recorderUI.style.display = "block";
 }
 
 async function uploadVideo(blob, videoName) {

@@ -92,6 +92,7 @@ import {
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 const toast = useToast();
 const firstName = ref("");
@@ -101,6 +102,7 @@ const registerPassword = ref("");
 const loginEmail = ref("");
 const loginPassword = ref("");
 const router = useRouter();
+const authStore = useAuthStore();
 // const error = ref('')
 
 let x = null;
@@ -190,6 +192,10 @@ onMounted(() => {
   //   maxToasts: 3,
   //   newestOnTop: true,
   // })
+
+  if (authStore.user) {
+    router.push("/record");
+  }
 });
 </script>
 
